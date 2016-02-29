@@ -6,6 +6,18 @@ var current_drill_phase = "";
 var current_drill_name = "";
 var current_drill_description = "";
 var current_special = "";
+var data = [];
+
+function printDrills(){
+    for( var i =0; i<data.length; i++){
+        var drill = data[i];
+        
+        console.log( "type:[%s] phase:[%s] special:[%s] name:[%s] ref:[%s] desc:", 
+            drill.type, drill.phase, drill.special,
+            drill.name, drill.ref);
+        console.log( drill.desc);
+    }
+}
 
 function drillComplete(){
     var ndx = current_drill_description.lastIndexOf( ".");
@@ -14,14 +26,18 @@ function drillComplete(){
     if( ref === "") ref = "noref";
     if( current_special === "") current_special = "none"
     
-    console.log( "type:[%s] phase:[%s] special:[%s] name:[%s] ref:[%s] desc:", 
-        current_drill_type, current_drill_phase, current_special,
-        current_drill_name, ref);
-    console.log( current_drill_description);
+    data.push( {
+        "type":current_drill_type,
+        "phase":current_drill_phase,
+        "special":current_special,
+        "name":current_drill_name,
+        "ref":ref,
+        "desc":current_drill_description
+    });
 }
     
 readline.createInterface({
-    input: fs.createReadStream( "d2.txt"),
+    input: fs.createReadStream( process.argv[2]),
     terminal: false
 }).on('line', function(line) {
     if( line.indexOf( "Drills") > -1){
@@ -60,4 +76,5 @@ readline.createInterface({
     }
 }).on( 'close', function(){
     drillComplete();
+    printDrills();
 });
