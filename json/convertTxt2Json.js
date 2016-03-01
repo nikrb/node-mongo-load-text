@@ -1,5 +1,7 @@
 var fs = require('fs');
 var readline = require('readline');
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
 
 var current_drill_type = "";
 var current_drill_phase = "";
@@ -7,6 +9,19 @@ var current_drill_name = "";
 var current_drill_description = "";
 var current_special = "";
 var data = [];
+
+function push2mongo(){
+    var url = 'mongodb://localhost:27017/shoot180';
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        console.log("Connected correctly to server.");
+        
+        db.collection( 'drills').insert( data);
+        
+        console.log( "complete");
+        db.close();
+    });
+}
 
 function printDrills(){
     for( var i =0; i<data.length; i++){
@@ -76,5 +91,9 @@ readline.createInterface({
     }
 }).on( 'close', function(){
     drillComplete();
-    printDrills();
+    if( process.argv[3] === "save"){
+        push2mongo();
+    } else {
+        printDrills();
+    }
 });
