@@ -13,7 +13,7 @@ MongoClient.connect(url, function(err, db) {
 });
 
 exports.findAll = function( req, res){
-    drills.find().toArray( function(err, items){
+    drills.find().sort( { type : 1, phase : 1}).toArray( function(err, items){
         if( err){
             console.log( "fetch drills failed");
         } else {

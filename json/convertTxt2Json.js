@@ -1,3 +1,7 @@
+// usage: node convertTxt2Json.js filename [save]
+// prints data generated
+// if save is specified data written to db (not printed)
+
 var fs = require('fs');
 var readline = require('readline');
 var MongoClient = require('mongodb').MongoClient;
@@ -27,10 +31,12 @@ function printDrills(){
     for( var i =0; i<data.length; i++){
         var drill = data[i];
         
-        console.log( "type:[%s] phase:[%s] special:[%s] name:[%s] ref:[%s] desc:", 
-            drill.type, drill.phase, drill.special,
-            drill.name, drill.ref);
-        console.log( drill.desc);
+        // console.log( "type:[%s] phase:[%s] special:[%s] name:[%s] ref:[%s] desc:", 
+        //     drill.type, drill.phase, drill.special,
+        //     drill.name, drill.ref);
+        console.log( "type:[%s] phase:[%s] name:[%s]", 
+            drill.type, drill.phase, drill.name);
+        // console.log( drill.desc);
     }
 }
 
@@ -57,8 +63,11 @@ readline.createInterface({
 }).on('line', function(line) {
     if( line.indexOf( "Drills") > -1){
         if( current_drill_type !== ""){
-            drillComplete();
+            drillComplete()
         }
+        // don't drill complete when we hit the next phase
+        current_drill_phase = "";
+        current_drill_name = "";
         current_drill_type = line.substr( 0, line.indexOf( " "));
     } else if( line.indexOf( 'Phase') === 0 ){
         if( current_drill_phase !== ""){
